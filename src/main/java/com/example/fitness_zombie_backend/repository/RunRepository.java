@@ -3,6 +3,7 @@ package com.example.fitness_zombie_backend.repository;
 import com.example.fitness_zombie_backend.entity.Run;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -17,5 +18,8 @@ public interface RunRepository extends JpaRepository<Run, UUID> {
         AND r.startTime >= :start
         ORDER BY r.startTime ASC
     """)
-    List<Run> findRunsFromDate(UUID profileId, OffsetDateTime start);
+    List<Run> findRunsFromDate(
+            @Param("profileId") UUID profileId,
+            @Param("start") OffsetDateTime start
+    );
 }

@@ -1,7 +1,13 @@
 package com.example.fitness_zombie_backend.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import com.example.fitness_zombie_backend.type.RunType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -9,29 +15,51 @@ import java.util.UUID;
 public class Run {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "profiles_id", nullable = false)
     private Profile profile;
 
-    @Column(name = "start_time")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(
+            name = "type",
+            nullable = false,
+            columnDefinition = "run_type"
+    )
+    private RunType type;
+
+    @Column(name = "start_time", nullable = false)
     private OffsetDateTime startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private OffsetDateTime endTime;
 
-    @Column(name = "distance_meters")
-    private int distanceMeters;
+    @Column(name = "distance_meters", nullable = false)
+    private Integer distanceMeters;
 
-    @Column(name = "duration_seconds")
-    private int durationSeconds;
+    @Column(name = "duration_seconds", nullable = false)
+    private Integer durationSeconds;
 
-    @Column(name = "calories_burned")
-    private int caloriesBurned;
+    @Column(name = "calories_burned", nullable = false)
+    private Integer caloriesBurned;
 
-    @Column(name = "created_at")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "route_data", columnDefinition = "jsonb")
+    private Map<String, Object> routeData;
+
+    @Column(
+            name = "created_at",
+            insertable = false,
+            updatable = false
+    )
     private OffsetDateTime createdAt;
+
+    public Run() {
+    }
 
     public UUID getId() {
         return id;
@@ -41,23 +69,67 @@ public class Run {
         return profile;
     }
 
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public RunType getType() {
+        return type;
+    }
+
+    public void setType(RunType type) {
+        this.type = type;
+    }
+
     public OffsetDateTime getStartTime() {
         return startTime;
+    }
+
+    public void setStartTime(OffsetDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public OffsetDateTime getEndTime() {
         return endTime;
     }
 
-    public int getDistanceMeters() {
+    public void setEndTime(OffsetDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getDistanceMeters() {
         return distanceMeters;
     }
 
-    public int getDurationSeconds() {
+    public void setDistanceMeters(Integer distanceMeters) {
+        this.distanceMeters = distanceMeters;
+    }
+
+    public Integer getDurationSeconds() {
         return durationSeconds;
     }
 
-    public int getCaloriesBurned() {
+    public void setDurationSeconds(Integer durationSeconds) {
+        this.durationSeconds = durationSeconds;
+    }
+
+    public Integer getCaloriesBurned() {
         return caloriesBurned;
+    }
+
+    public void setCaloriesBurned(Integer caloriesBurned) {
+        this.caloriesBurned = caloriesBurned;
+    }
+
+    public Map<String, Object> getRouteData() {
+        return routeData;
+    }
+
+    public void setRouteData(Map<String, Object> routeData) {
+        this.routeData = routeData;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
     }
 }
