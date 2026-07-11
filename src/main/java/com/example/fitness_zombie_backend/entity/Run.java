@@ -1,10 +1,10 @@
 package com.example.fitness_zombie_backend.entity;
 
+import com.example.fitness_zombie_backend.type.RunType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import com.example.fitness_zombie_backend.type.RunType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -46,6 +46,9 @@ public class Run {
 
     @Column(name = "calories_burned", nullable = false)
     private Integer caloriesBurned;
+
+    @Column(name = "best_pace_km_per_h", nullable = false)
+    private Float bestSpeedKmh = 0.0f;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "route_data", columnDefinition = "jsonb")
@@ -119,6 +122,14 @@ public class Run {
 
     public void setCaloriesBurned(Integer caloriesBurned) {
         this.caloriesBurned = caloriesBurned;
+    }
+
+    public Float getBestSpeedKmh() {
+        return bestSpeedKmh;
+    }
+
+    public void setBestSpeedKmh(Float bestSpeedKmh) {
+        this.bestSpeedKmh = bestSpeedKmh;
     }
 
     public Map<String, Object> getRouteData() {

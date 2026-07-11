@@ -4,11 +4,11 @@ import com.example.fitness_zombie_backend.dto.run.CreateRunRequest;
 import com.example.fitness_zombie_backend.entity.Run;
 import com.example.fitness_zombie_backend.service.RunService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/run")
@@ -27,5 +27,12 @@ public class RunController {
             @Valid @RequestBody CreateRunRequest request
     ) {
         return runService.createRun(userId, request);
+    }
+
+    @GetMapping
+    public List<Run> getAllRuns(
+            @RequestHeader("X-USER-ID") UUID userId
+    ) {
+        return runService.getAllRuns(userId);
     }
 }

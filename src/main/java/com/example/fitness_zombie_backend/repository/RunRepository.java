@@ -22,4 +22,6 @@ public interface RunRepository extends JpaRepository<Run, UUID> {
             @Param("profileId") UUID profileId,
             @Param("start") OffsetDateTime start
     );
+
+    List<Run> findAllByProfileIdOrderByStartTimeDesc(UUID profileId);
 }

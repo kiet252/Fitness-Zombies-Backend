@@ -1,6 +1,7 @@
 package com.example.fitness_zombie_backend.dto.run;
 
 import com.example.fitness_zombie_backend.type.RunType;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -26,6 +27,9 @@ public record CreateRunRequest(
 
         @Min(0)
         Integer caloriesBurned,
+
+        @DecimalMin("0.0")
+        Float bestSpeedKmh,
 
         Map<String, Object> routeData
 ) {

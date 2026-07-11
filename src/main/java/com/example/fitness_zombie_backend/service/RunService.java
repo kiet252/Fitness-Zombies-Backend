@@ -1,13 +1,14 @@
 package com.example.fitness_zombie_backend.service;
 
+import com.example.fitness_zombie_backend.dto.run.CreateRunRequest;
+import com.example.fitness_zombie_backend.entity.Profile;
+import com.example.fitness_zombie_backend.entity.Run;
+import com.example.fitness_zombie_backend.repository.ProfileRepository;
+import com.example.fitness_zombie_backend.repository.RunRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.fitness_zombie_backend.repository.ProfileRepository;
-import com.example.fitness_zombie_backend.repository.RunRepository;
-import com.example.fitness_zombie_backend.entity.*;
-import com.example.fitness_zombie_backend.dto.run.CreateRunRequest;
-
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,8 +50,25 @@ public class RunService {
         run.setDistanceMeters(request.distanceMeters());
         run.setDurationSeconds(request.durationSeconds());
         run.setCaloriesBurned(request.caloriesBurned());
+
+        run.setBestSpeedKmh(
+                request.bestSpeedKmh() == null
+                        ? 0.0f
+                        : request.bestSpeedKmh()
+        );
+
         run.setRouteData(request.routeData());
 
         return runRepository.save(run);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Run> getAllRuns(UUID profileId) {
+        if (!profileRepository.existsById(profileId)) {
+            throw new IllegalArgumentException("Profile not found");
+        }
+
+        return runRepository
+                .findAllByProfileIdOrderByStartTimeDesc(profileId);
     }
 }
