@@ -50,6 +50,9 @@ public class Run {
     @Column(name = "best_pace_km_per_h", nullable = false)
     private Float bestSpeedKmh = 0.0f;
 
+    @Column(name = "xp_earned", nullable = false)
+    private Integer xpEarned = 0;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "route_data", columnDefinition = "jsonb")
     private Map<String, Object> routeData;
@@ -130,6 +133,14 @@ public class Run {
 
     public void setBestSpeedKmh(Float bestSpeedKmh) {
         this.bestSpeedKmh = bestSpeedKmh;
+    }
+
+    public Integer getXpEarned() {
+        return xpEarned;
+    }
+
+    public void setXpEarned(Integer xpEarned) {
+        this.xpEarned = xpEarned;
     }
 
     public Map<String, Object> getRouteData() {

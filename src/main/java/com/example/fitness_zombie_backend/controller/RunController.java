@@ -1,6 +1,7 @@
 package com.example.fitness_zombie_backend.controller;
 
 import com.example.fitness_zombie_backend.dto.run.CreateRunRequest;
+import com.example.fitness_zombie_backend.dto.run.RunCompletionResponse;
 import com.example.fitness_zombie_backend.entity.Run;
 import com.example.fitness_zombie_backend.service.RunService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class RunController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Run createRun(
+    public RunCompletionResponse createRun(
             @RequestHeader("X-USER-ID") UUID userId,
             @Valid @RequestBody CreateRunRequest request
     ) {

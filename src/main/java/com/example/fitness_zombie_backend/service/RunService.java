@@ -1,6 +1,7 @@
 package com.example.fitness_zombie_backend.service;
 
 import com.example.fitness_zombie_backend.dto.run.CreateRunRequest;
+import com.example.fitness_zombie_backend.dto.run.RunCompletionResponse;
 import com.example.fitness_zombie_backend.entity.Profile;
 import com.example.fitness_zombie_backend.entity.Run;
 import com.example.fitness_zombie_backend.repository.ProfileRepository;
@@ -26,7 +27,7 @@ public class RunService {
     }
 
     @Transactional
-    public Run createRun(
+    public RunCompletionResponse createRun(
             UUID profileId,
             CreateRunRequest request
     ) {
@@ -59,7 +60,22 @@ public class RunService {
 
         run.setRouteData(request.routeData());
 
-        return runRepository.save(run);
+        int xpEarned = calculateRunXp(run);
+
+        run.setXpEarned(xpEarned);
+
+        Run savedRun = runRepository.save(run);
+
+        addXp(profile, xpEarned);
+
+        profileRepository.save(profile);
+
+        return new RunCompletionResponse(
+                savedRun,
+                xpEarned,
+                profile.getCurrentXp(),
+                profile.getLevel()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -70,5 +86,30 @@ public class RunService {
 
         return runRepository
                 .findAllByProfileIdOrderByStartTimeDesc(profileId);
+    }
+    
+    private int calculateRunXp(Run run) {
+        int baseXp = run.getDistanceMeters() / 100;
+
+        if (run.getType().name().equalsIgnoreCase("zombie")) {
+                baseXp = (int) (baseXp * 1.5);
+        }
+
+        return Math.max(baseXp, 1);
+    }
+
+    private void addXp(Profile profile, int xp) {
+
+        int newXp = profile.getCurrentXp() + xp;
+
+        profile.setCurrentXp(newXp);
+
+        int newLevel = calculateLevel(newXp);
+
+        profile.setLevel(newLevel);
+    }
+
+    private int calculateLevel(int xp) {
+        return (xp / 500) + 1;
     }
 }
