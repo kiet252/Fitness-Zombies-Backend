@@ -17,13 +17,16 @@ public class RunService {
 
     private final RunRepository runRepository;
     private final ProfileRepository profileRepository;
+    private final AchievementService achievementService;
 
     public RunService(
             RunRepository runRepository,
-            ProfileRepository profileRepository
+            ProfileRepository profileRepository,
+            AchievementService achievementService
     ) {
         this.runRepository = runRepository;
         this.profileRepository = profileRepository;
+        this.achievementService = achievementService;
     }
 
     @Transactional
@@ -70,11 +73,15 @@ public class RunService {
 
         profileRepository.save(profile);
 
+        java.util.List<com.example.fitness_zombie_backend.dto.achievement.ProfileAchievementDto> unlockedAchievements = 
+                achievementService.evaluateAchievements(profile);
+
         return new RunCompletionResponse(
                 savedRun,
                 xpEarned,
                 profile.getCurrentXp(),
-                profile.getLevel()
+                profile.getLevel(),
+                unlockedAchievements
         );
     }
 

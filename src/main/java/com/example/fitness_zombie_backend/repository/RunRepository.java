@@ -24,4 +24,11 @@ public interface RunRepository extends JpaRepository<Run, UUID> {
     );
 
     List<Run> findAllByProfileIdOrderByStartTimeDesc(UUID profileId);
+
+    int countByProfileId(UUID profileId);
+
+    int countByProfileIdAndType(UUID profileId, com.example.fitness_zombie_backend.type.RunType type);
+
+    @Query("SELECT COALESCE(SUM(r.distanceMeters), 0) FROM Run r WHERE r.profile.id = :profileId")
+    int sumDistanceByProfileId(@Param("profileId") UUID profileId);
 }
